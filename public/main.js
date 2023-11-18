@@ -14,13 +14,36 @@ const htmlStructure = () => {
     <button class="btn btn-info" id="post-name">POST YOUR NAME</button>
     <button class="btn btn-success" id="patch-name">PATCH YOUR NAME</button>
     <button class="btn btn-danger" id="delete-name">DELETE YOUR NAME</button>
+    <div id="jokeSetup"></div>
+    <div id="jokeDelivery"></div>
   `;
 };
 
-const events = () => {
-  document.querySelector('#get-joke').addEventListener('click', () => {
-    getRequest().then(console.warn);
+const jokeCycle = () => {
+  const jokeBtn = document.querySelector('#get-joke');
+  const jokeSetup = document.querySelector('#jokeSetup');
+  const jokeDelivery = document.querySelector('#jokeDelivery');
+  getRequest().then((jokeData) => {
+    jokeBtn.addEventListener('click', () => {
+      if (jokeBtn.innerHTML === 'GET JOKE') {
+        jokeSetup.innerHTML = jokeData.setup;
+        jokeBtn.innerHTML = 'GET PUNCHLINE';
+      } else if (jokeBtn.innerHTML === 'GET PUNCHLINE') {
+        jokeDelivery.innerHTML = jokeData.delivery;
+        jokeBtn.innerHTML = 'GET A NEW JOKE';
+      } else if (jokeBtn.innerHTML.includes('NEW')) {
+        jokeBtn.innerHTML = 'GET JOKE';
+        jokeSetup.innerHTML = '';
+        jokeDelivery.innerHTML = '';
+      }
+    });
   });
+};
+
+const events = () => {
+  // document.querySelector('#get-joke').addEventListener('click', jokeCycle);
+  jokeCycle();
+
   document.querySelector('#post-name').addEventListener('click', () => {
     // update this object with your name
     const payload = { name: 'YOUR NICKNAME' };
